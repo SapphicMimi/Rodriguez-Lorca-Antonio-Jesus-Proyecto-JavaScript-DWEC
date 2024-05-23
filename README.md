@@ -1,1 +1,1 @@
-# Proyecto-JavaScript-DWEC
+# Proyecto JavaScript DWEC - Tienda de Ropa
