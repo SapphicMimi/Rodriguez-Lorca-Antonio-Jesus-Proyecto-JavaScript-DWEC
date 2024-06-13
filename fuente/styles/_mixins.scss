@@ -1,0 +1,16 @@
+/* Mixins */
+@use "sass:map";
+
+@mixin mixinMediaQueryWidth($value){
+    $tamaño: map.get($ruptureWidth, $value);
+    @media screen and (max-width: $tamaño){
+        @content;
+    }
+}
+
+@mixin mixinMediaQueryHeight($value){
+    $tamaño: map.get($ruptureHeight, $value);
+    @media screen and (max-height: $tamaño){
+        @content;
+    }
+}

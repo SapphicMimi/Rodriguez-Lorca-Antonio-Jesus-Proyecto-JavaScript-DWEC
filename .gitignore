@@ -1,0 +1,8 @@
+node_modules
+produccion
+desarrollo
+.parcel-cache
+*tmp
+principal.css
+principal.css.map
+delete_things.html

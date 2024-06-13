@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+
+        <title>Tokyo Clothes - Inicio de Sesión / Registro</title>
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="../styles/principal.css">
+
+        <script src="../js/loginRegister.js" async defer></script> 
+    </head>
+    <body>
+        <header class="header-b">
+            <nav class="header-top">
+                <div class="logo">
+                    <img id="logo" src="../img/logotype.webp">
+                </div>
+                
+                <div class="secciones">
+                    <a class="header-button">Contacto</a>
+                    <a class="header-button">Localización</a>
+                </div>
+                <div class="secciones">
+                    <a class="header-button">Carrito</a>
+                    <a class="header-button">Iniciar Sesión</a>
+                    <a class="header-button">Cerrar Sesión</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section class="login-register">
+                <article id="login" class="login">
+                    <h3>Inicio de Sesión</h3>
+                    <form>
+                        <label for="user">Usuario (Nombre) </label>
+                        <input id="user" type="text" placeholder="Usuario" required>
+                        <label for="userPass">Contraseña </label>
+                        <input id="userPass" type="password" placeholder="Contraseña" required>
+
+                        <input class="button-form" id="loginButton" type="submit" value="Iniciar Sesión">
+                        <p id="errorLogin"></p>
+                    </form>
+                    <h4>¿No tienes cuenta? Registrate aquí</h4>
+                    <button id="changeRegister">Registrarse</button>
+                </article>
+                <article id="register" class="hidden">
+                    <h3>Registro</h3>
+                    <form>
+                        <p id="complete"></p>
+                        <label for="name">Nombre </label>
+                        <input id="name" type="text" placeholder="Nombre" required>
+                        <br>
+                        <label for="surname">Apellidos </label>
+                        <input id="surname" type="text" placeholder="Apellidos" required>
+                        <br>
+                        <label for="email">Correo Electronico </label>
+                        <input id="email" type="text" placeholder="Correo" required>
+                        <br>
+                        <label for="pass">Contraseña </label>
+                        <input id="pass" type="password" placeholder="Contraseña" required>
+                        <br>
+                        
+                        <label for="dni">DNI </label>
+                        <input id="dni" type="text" placeholder="DNI" required>
+                        <br>
+                        <label for="age">Edad </label>
+                        <input id="age" type="number" placeholder="Edad" min="0" required>
+                        <br>
+
+                        <input class="button-form" id="registerButton" type="submit" value="Registrarse">
+                        <p id="errorRegister"></p>
+                    </form>
+                    <h4>¿Ya tienes cuenta? Inicia Sesión clickando aquí</h4>
+                    <button id="changeLogin">Iniciar Sesión</button>
+                </article>
+            </section>
+        </main>
+    </body>
+</html>
