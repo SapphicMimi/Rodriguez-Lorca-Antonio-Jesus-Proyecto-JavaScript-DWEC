@@ -1,0 +1,22 @@
+.cart {
+    
+    li {
+        display: flex;
+
+        align-items: center;
+        text-align: center;
+
+        div {
+            display: flex;
+
+            justify-self: flex-end;
+            align-items: center;
+
+            button {
+                display: flex;
+
+                
+            }
+        }
+    }
+}

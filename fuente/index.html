@@ -10,9 +10,12 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="styles/principal.css">
+        <link rel="stylesheet" href="styles/principal.scss">
+        <link rel="stylesheet" href="../node_modules/boxicons/css/boxicons.min.css">
 
         <script src="js/inicio.js" async defer></script> 
+        <script src="js/sesion.js" async defer></script> 
+        <script src="js/scroll-Infinito.js" async defer></script>
     </head>
     <body>
         <header class="header">
@@ -22,13 +25,10 @@
                 </div>
                 
                 <div class="secciones">
-                    <a class="header-button">Contacto</a>
-                    <a class="header-button">Localización</a>
+
                 </div>
-                <div class="secciones">
-                    <a class="header-button">Carrito</a>
-                    <a class="header-button">Iniciar Sesión</a>
-                    <a class="header-button">Cerrar Sesión</a>
+                <div id="sesion" class="secciones">
+                    
                 </div>
             </nav>
             <nav class="header-bottom">
@@ -41,8 +41,8 @@
         <main>
             <section class="body-section">
                 <aside class="aside-buttons">
-                    <button id="b-list" class="aside-b-1">Mostrar como Lista</button>
-                    <button id="b-table" class="aside-b-1">Mostrar como Tabla</button>
+                    <button id="b-list" class="aside-b-1">Mostrar como Tabla</button>
+                    <button id="b-table" class="aside-b-1">Mostrar como Lista</button>
                     <button id="b-desc" class="aside-b-2">Ordenar Descendente</button>
                     <button id="b-asc" class="aside-b-2">Ordenar Ascendente</button>
                     <img src="img/pinguim-penguin.gif">
@@ -53,6 +53,10 @@
                         
                     </ul>
                 </article>
+                <div class="hidden">
+                    <a href="html/carrito.html"></a>
+                    <a href="html/login-register.html"></a>
+                </div>
             </section>
         </main>
     </body>

@@ -281,7 +281,7 @@
             vertical-align: middle;
 
             img {
-                width: 50%;
+                width: 60%;
                 object-fit: cover;
             }
         }
@@ -498,5 +498,17 @@
 
             color: $grey_2;
         }
+    }
+}
+
+.icon {
+    color: $white;
+
+    font-size: 20px;
+}
+
+.no-hover {
+    &:hover {
+        background-color: $grey_4;
     }
 }

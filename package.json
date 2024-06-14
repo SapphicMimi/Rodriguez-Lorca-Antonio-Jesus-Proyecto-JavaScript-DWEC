@@ -4,8 +4,8 @@
   "description": "Página Web de compra de productos uusando HTML, JavaScript y SASS.",
   "browsers": "> 0.5%, last 4 versions, not dead",
   "scripts": {
-    "desarrollo":"parcel fuente/index.html --dist-dir desarrollo",
-    "produccion":"parcel build fuente/index.html --public-url './' --dist-dir produccion",
+    "desarrollo": "parcel fuente/index.html --dist-dir desarrollo",
+    "produccion": "parcel build fuente/index.html --public-url './' --dist-dir produccion",
     "limpieza": "rimraf desarrollo produccion .parcel-cache",
     "des": "npm run desarrollo",
     "prod": "npm-run-all limpieza produccion"
@@ -26,5 +26,8 @@
     "parcel": "^2.12.0",
     "parcel-plugin-imagemin": "^4.0.2",
     "rimraf": "^5.0.7"
+  },
+  "dependencies": {
+    "boxicons": "^2.1.4"
   }
 }

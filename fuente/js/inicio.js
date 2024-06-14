@@ -94,7 +94,7 @@ function showOneProduct(product) {
     createContainerElement(product);
 }
 
-/* Función para crear la lista */
+/* Función para crear la tabla */
 function createList() {
     HTML_products.innerHTML = " ";
 
@@ -105,7 +105,7 @@ function createList() {
     HTML_products.appendChild(ul);
 }
 
-/* Funcion para crear los elementos de la lista */
+/* Funcion para crear los elementos de la tabla */
 function createElementsList(products) {
     if(scrollActive == false) {
         createList();
@@ -124,7 +124,7 @@ function createElementsList(products) {
 
         let div_info = createDivInfo(product.title, product.price, product.id);
         let div_buttons = createDivButtons(product.id);
-        let div_cart = createDivCart();
+        let div_cart = createDivCart(product.id);
 
         item.appendChild(img);
         item.appendChild(div_info);
@@ -155,7 +155,7 @@ function createElementsList(products) {
 
     placement = "list";
 }
-/* Funcion para crear la tabla */
+/* Funcion para crear la lista */
 function createTable() {
     HTML_products.innerHTML = " ";
 
@@ -171,7 +171,7 @@ function createTable() {
     HTML_products.appendChild(table);
 }
 
-/* Función para crear los elementos de la tabla */
+/* Función para crear los elementos de la lista */
 function createElementsTable(products) {
     if(scrollActive == false) {
         createTable();
@@ -196,15 +196,13 @@ function createElementsTable(products) {
         
         let td_image = createImgTable(product.image, product.title);
         let td_buttons = createButtonsTable(product.id);
-        let th_input = createInputTable();
-        let th_cart = createButtonCart();
+        let th_cart = createButtonCart(product.id);
 
         tr.appendChild(td_image);
         tr.appendChild(th_name);
         tr.appendChild(th_price);
         tr.appendChild(p_hidden);
         tr.appendChild(td_buttons);
-        tr.appendChild(th_input);
         tr.appendChild(th_cart);
 
         tbody.appendChild(tr);
@@ -244,8 +242,7 @@ function createContainerElement(product) {
 
     let div_text = createTextContainer(product.title, product.price, product.category, product.description);
     let div_buttons = createButtonsContainer(product.id);
-    let div_input = createInputContainer();
-    let div_cart = createCartContainer();
+    let div_cart = createCartContainer(product.id);
 
     div_general.classList.add("one-product");
     div_info.classList.add("one-product-info");
@@ -255,7 +252,6 @@ function createContainerElement(product) {
     img.alt = product.title;
 
     div_bottom_layer.appendChild(div_buttons);
-    div_bottom_layer.appendChild(div_input);
     div_bottom_layer.appendChild(div_cart);
 
     div_info.appendChild(div_text);
@@ -268,7 +264,7 @@ function createContainerElement(product) {
 }
 
 function countLikes(id) {
-    let likeCount = localStorage.getItem("like-id-"+id);
+    let likeCount = localStorage.getItem("like-id-" + id);
 
     if(likeCount == null) {
         likeCount = 0;
@@ -278,7 +274,7 @@ function countLikes(id) {
 }
 
 function countDisLikes(id) {
-    let dislikeCount = localStorage.getItem("dislike-id-"+id);
+    let dislikeCount = localStorage.getItem("dislike-id-" + id);
 
     if(dislikeCount == null) {
         dislikeCount = 0;
@@ -293,15 +289,60 @@ function createLikeButton(id_product) {
     let button_like = document.createElement("button");
     let likeCount = countLikes(id_product);
 
-    button_like.innerHTML = "Me Gusta (" + likeCount + ")";
-    button_like.id = id_product;
+    button_like.id = "like-id-" + id_product;
+
+    if(sesion) {
+        if(sesion.dislike.indexOf(id_product) > -1) {
+            button_like.disabled = true;
+        }
+    }
+
+    if(sesion) {
+        if(sesion.like.length == 0) {
+            button_like.innerHTML = "Me Gusta (" + likeCount + ")";
+        } else {
+            if(sesion.like.indexOf(id_product) > -1) {
+                button_like.innerHTML = "Te Gusta (" + likeCount + ")";
+            } else {
+                button_like.innerHTML = "Me Gusta (" + likeCount + ")";
+            }
+        }
+    } else {
+        button_like.innerHTML = "Me Gusta (" + likeCount + ")";
+    }
 
     button_like.addEventListener("click", () => {
-        let likeCountEL = localStorage.getItem("like-id-" + button_like.id);
-        likeCountEL++;
-        localStorage.setItem("like-id-" + button_like.id, likeCountEL);
-
-        button_like.innerHTML = "Me Gusta (" + likeCountEL + ")";
+        if(sesion) {
+            if(sesion.like.indexOf(id_product) > -1) {
+                let likeCountEL = localStorage.getItem(button_like.id);
+                likeCountEL--;
+    
+                let index = sesion.like.indexOf(id_product);
+                sesion.like.splice(index, 1);
+    
+                localStorage.setItem("sesion", JSON.stringify(sesion));
+                localStorage.setItem(button_like.id, likeCountEL);
+    
+                button_like.innerHTML = "Me Gusta (" + likeCountEL + ")";
+    
+                document.getElementById("dislike-id-" + id_product).disabled = false;
+    
+            } else {
+                let likeCountEL = localStorage.getItem(button_like.id);
+                likeCountEL++;
+    
+                sesion.like.push(id_product);
+    
+                localStorage.setItem("sesion", JSON.stringify(sesion));
+                localStorage.setItem(button_like.id, likeCountEL);
+    
+                button_like.innerHTML = "Te Gusta (" + likeCountEL + ")";
+    
+                document.getElementById("dislike-id-" + id_product).disabled = true;
+            }
+        } else {
+            alert("Para dar me gusta a un elemento, primero tienes que Iniciar Sesión");
+        }
     });
 
     return button_like;
@@ -312,18 +353,107 @@ function createDislikeButton(id_product) {
     let button_dislike = document.createElement("button");
     let dislikeCount = countDisLikes(id_product);
 
-    button_dislike.innerHTML = "No me Gusta (" + dislikeCount + ")";
-    button_dislike.id = id_product;
+    button_dislike.id = "dislike-id-" + id_product;
+
+    if(sesion) {
+        if(sesion.like.indexOf(id_product) > -1) {
+            button_dislike.disabled = true;
+        }
+    }
+
+    if(sesion) {
+        if(sesion.dislike.length == 0) {
+            button_dislike.innerHTML = "No me Gusta (" + dislikeCount + ")";
+        } else {
+            if(sesion.dislike.indexOf(id_product) > -1) {
+                button_dislike.innerHTML = "No te Gusta (" + dislikeCount + ")";
+            } else {
+                button_dislike.innerHTML = "No me Gusta (" + dislikeCount + ")";
+            }
+        }
+    } else {
+        button_dislike.innerHTML = "No me Gusta (" + dislikeCount + ")";
+    }
 
     button_dislike.addEventListener("click", () => {
-        let dislikeCountEL = localStorage.getItem("dislike-id-" + button_dislike.id);
-        dislikeCountEL++;
-        localStorage.setItem("dislike-id-" + button_dislike.id, dislikeCountEL);
-
-        button_dislike.innerHTML = "No me Gusta (" + dislikeCountEL + ")";
+        if(sesion) {
+            if(sesion.dislike.indexOf(id_product) > -1) {
+                let dislikeCountEL = localStorage.getItem(button_dislike.id);
+                dislikeCountEL--;
+    
+                let index = sesion.dislike.indexOf(id_product);
+                sesion.dislike.splice(index, 1);
+    
+                localStorage.setItem("sesion", JSON.stringify(sesion));
+                localStorage.setItem(button_dislike.id, dislikeCountEL);
+    
+                button_dislike.innerHTML = "No Me Gusta (" + dislikeCountEL + ")";
+    
+                document.getElementById("like-id-" + id_product).disabled = false;
+    
+            } else {
+                let dislikeCountEL = localStorage.getItem(button_dislike.id);
+                dislikeCountEL++;
+    
+                sesion.dislike.push(id_product);
+    
+                localStorage.setItem("sesion", JSON.stringify(sesion));
+                localStorage.setItem(button_dislike.id, dislikeCountEL);
+    
+                button_dislike.innerHTML = "No Te Gusta (" + dislikeCountEL + ")";
+    
+                document.getElementById("like-id-" + id_product).disabled = true;
+            }
+        } else {
+            alert("Para dar un no me gusta a un elemento, primero tienes que Iniciar Sesión");
+        }
     });
 
     return button_dislike;
+}
+
+/* Boton de Favorito */
+function createFavButton(id_product) {
+    let button = document.createElement("button");
+
+    if(sesion) {
+        if(sesion.fav.length == 0) {
+            button.innerHTML = "Favorito <i class='bx bx-heart icon' ></i>";
+        } else {
+            if(sesion.fav.indexOf("product-" + id_product) > -1) {
+                button.innerHTML = "Quitar Favorito <i class='bx bxs-heart icon' ></i>";
+            } else {
+                button.innerHTML = "Favorito <i class='bx bx-heart icon' ></i>";
+            }
+        }
+    } else {
+        button.innerHTML = "Favorito <i class='bx bx-heart icon' ></i>";
+    }
+    
+    button.id = "fav_button";
+
+    button.addEventListener("click", () => {
+        if(sesion) {
+            if(sesion.fav.length == 0) {
+                sesion.fav.push("product-" + id_product);
+                button.innerHTML = "Quitar Favorito <i class='bx bxs-heart icon' ></i>";
+            } else {
+                if(sesion.fav.indexOf("product-" + id_product) > -1) {
+                    sesion.fav.splice(sesion.fav.indexOf("product-" + id_product), 1);
+                    button.innerHTML = "Favorito <i class='bx bx-heart icon' ></i>";
+                } else {
+                    sesion.fav.push("product-" + id_product);
+                    button.innerHTML = "Quitar Favorito <i class='bx bxs-heart icon' ></i>";
+                }
+            }
+            
+            localStorage.setItem("sesion", JSON.stringify(sesion));
+        } else {
+            alert("Tienes que Iniciar Sesión para poder agregar productos a tu lista de favoritos.")
+        }
+    })
+
+    return button;
 }
 
 /* Funciones para crear los elementos de la lista */
@@ -354,9 +484,7 @@ function createDivButtons(id) {
 
     let button_like = createLikeButton(id);
     let button_dislike = createDislikeButton(id);
-    let button_fav = document.createElement("button");
-
-    button_fav.innerHTML = "Favorito";
+    let button_fav = createFavButton(id);
 
     div_buttons.classList.add("prod-buttoms");
 
@@ -367,26 +495,39 @@ function createDivButtons(id) {
     return div_buttons;
 }
 
-function createDivCart() {
+function createDivCart(id) {
     let div_cart = document.createElement("div");
     let div_input = document.createElement("div");
 
     let label = document.createElement("label");
-    let input = document.createElement("input");
     let button = document.createElement("button");
 
-    label.textContent = "Unidades a añadir";
-    input.type = "number";
-    input.value = 1;
-    input.min = 1;
-    input.style = "width: 35px";
-
     button.textContent = "Añadir al Carrito";
+
+    button.addEventListener("click", () => {
+        if(sesion) {
+
+            if(sesion.cart.length == 0) {
+                sesion.cart.push(id);
+                alert("Se ha añadido el producto al Carrito.");
+            } else {
+                if(sesion.cart.indexOf(id) > -1) {
+                    alert("Este producto ya esta en el carrito");
+                } else {
+                    sesion.cart.push(id);
+                    alert("Se ha añadido el producto al Carrito.");
+                }
+            }
+
+            localStorage.setItem("sesion", JSON.stringify(sesion));
+        } else {
+            alert("¡Inicia sesión primero, Registrarse en gratis!")
+        }
+    })
 
     div_cart.classList.add("prod-cart");
 
     div_input.appendChild(label);
-    div_input.appendChild(input);
 
     div_cart.appendChild(div_input);
     div_cart.appendChild(button);
@@ -421,9 +562,7 @@ function createButtonsTable(id) {
 
     let button_like = createLikeButton(id);
     let button_dislike = createDislikeButton(id);
-    let button_fav = document.createElement("button");
-
-    button_fav.innerHTML = "Favorito";
+    let button_fav = createFavButton(id);
 
     div_buttons.classList.add("table-buttons");
     button_like.classList.add("table-button");
@@ -439,30 +578,34 @@ function createButtonsTable(id) {
     return td;
 }
 
-function createInputTable() {
-    let th = document.createElement("th");
-    let input = document.createElement("input");
-
-    input.classList.add("table-input");
-    input.classList.add("input");
-
-    input.type = "number";
-    input.value = 1;
-    input.min = 1;
-    input.style = "width: 85px";
-
-    th.appendChild(input);
-
-    return th;
-}
-
-function createButtonCart() {
+function createButtonCart(id) {
     let th = document.createElement("th");
     let button = document.createElement("button");
 
     button.textContent = "Añadir a Carrito";
 
     button.classList.add("table-cart");
+
+    button.addEventListener("click", () => {
+        if(sesion) {
+
+            if(sesion.cart.length == 0) {
+                sesion.cart.push(id);
+                alert("Se ha añadido el producto al Carrito.");
+            } else {
+                if(sesion.cart.indexOf(id) > -1) {
+                    alert("Este producto ya esta en el carrito");
+                } else {
+                    sesion.cart.push(id);
+                    alert("Se ha añadido el producto al Carrito.");
+                }
+            }
+            
+            localStorage.setItem("sesion", JSON.stringify(sesion));
+        } else {
+            alert("¡Inicia sesión primero, Registrarse en gratis!")
+        }
+    })
     
     th.appendChild(button);
 
@@ -477,21 +620,18 @@ function createTopTable() {
     let th_2 = document.createElement("th");
     let th_3 = document.createElement("th");
     let th_4 = document.createElement("th");
-    let th_5 = document.createElement("th");
     let th_6 = document.createElement("th");
 
     th_1.textContent = "Imagen";
     th_2.textContent = "Producto";
     th_3.textContent = "Precio";
     th_4.textContent = "Botones";
-    th_5.textContent = "Unidades";
     th_6.textContent = "Carrito";
 
     tr.appendChild(th_1);
     tr.appendChild(th_2);
     tr.appendChild(th_3);
     tr.appendChild(th_4);
-    tr.appendChild(th_5);
     tr.appendChild(th_6);
 
     thead.appendChild(tr);
@@ -530,11 +670,9 @@ function createButtonsContainer(id) {
 
     let button_like = createLikeButton(id);
     let button_dislike = createDislikeButton(id);
-    let button_fav = document.createElement("button");
+    let button_fav = createFavButton(id);
 
     div.classList.add("one-product-buttons");
-    
-    button_fav.innerHTML = "Favorito";
 
     div.appendChild(button_like);
     div.appendChild(button_fav);
@@ -543,35 +681,34 @@ function createButtonsContainer(id) {
     return div;
 }
 
-function createInputContainer() {
-    let div = document.createElement("div");
-
-    let label = document.createElement("label");
-    let input = document.createElement("input");
-
-    div.classList.add("one-product-input");
-
-    label.textContent = "Unidades a añadir al Carrito";
-
-    input.id = "amount-to-buy";
-    input.type = "number";
-    input.value = 1;
-    input.min = 1;
-    input.style = "width: 35px";
-
-    div.appendChild(label);
-    div.appendChild(input);
-
-    return div;
-}
-
-function createCartContainer() {
+function createCartContainer(id) {
     let div = document.createElement("div");
     let button = document.createElement("button");
 
     div.classList.add("one-product-cart");
 
     button.textContent = "Añadir al Carrito";
+
+    button.addEventListener("click", () => {
+        if(sesion) {
+
+            if(sesion.cart.length == 0) {
+                sesion.cart.push(id);
+                alert("Se ha añadido el producto al Carrito.");
+            } else {
+                if(sesion.cart.indexOf(id) > -1) {
+                    alert("Este producto ya esta en el carrito");
+                } else {
+                    sesion.cart.push(id);
+                    alert("Se ha añadido el producto al Carrito.");
+                }
+            }
+            
+            localStorage.setItem("sesion", JSON.stringify(sesion));
+        } else {
+            alert("¡Inicia sesión primero, Registrarse en gratis!")
+        }
+    })
 
     div.appendChild(button);
 
@@ -615,14 +752,4 @@ document.getElementById("logo").addEventListener("click", () => {
     scrollActive = false;
 
     downloadProducts();
-})
-
-/* innerHeight -> Nos da la altura del área de visualización del navegador.  */
-/* scrollY -> Indica cuánto se ha desplazado verticalmente el usuario. */
-/* offsetHeight -> Nos da la altura total del contenido de la página. */
-window.addEventListener("scroll", async () => {
-    if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 20) {
-        scrollActive = true;
-        downloadProducts();
-    }
 })

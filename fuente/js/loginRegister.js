@@ -25,6 +25,12 @@ let regexDNI = /^[0-9]{8}[TRWAGMYFPDXBNJZSQVHLCKE]$/i;
 /* Boolean para confirmar que todos los campos estan correctos */
 let correct = false;
 
+/* Si el usuario online es correcto */
+let bool = false;
+
+/* Boton para volver al Inicio */
+let back = document.getElementById("back");
+
 /* URL */
 const URL_users = "https://fakestoreapi.com/users";
 
@@ -182,7 +188,9 @@ buttonRegister.addEventListener("click", (event) =>  {
             dni : dni.value,
             age : age.value,
             fav: [],
-            cart: []
+            cart: [],
+            like: [],
+            dislike: []
         };
 
         localStorage.setItem(nameR.value, JSON.stringify(user));
@@ -209,71 +217,61 @@ function localUsers(name, pass) {
     }
 }
 
-/*
+async function onlineUsers(name, pass) {
+    let usersD;
 
+    const res = await fetch(URL_users);
+    usersD = await res.json();
 
-function onlineUsers(name, pass) {
-    users.forEach(user => {
+    usersD.forEach(user => {
         if(user.username == name && user.password == pass) {
-            console.log("yippe");
-        } else {
-            console.log("not yippe");
+            bool = true;
         }
     })
 }
-*/
-
-async function downloadUsers() {
-        let usersD;
-
-        const res = await fetch(URL_users);
-        usersD = await res.json();
-
-        return usersD;
-}
-
-function onlineUsers(name, pass) {
-    const users = downloadUsers();
-
-    let result;
-
-    users.then((users) => {
-        users.forEach(user => {
-            if(user.username == "johnd" && user.password == "m38rmF$") {
-                result = "truers";
-            }
-        })
-    })
-
-    return result;
-}
-console.log(onlineUsers("johnd", "m38rmF$"));
 
 /* "johnd", "m38rmF$" */
 
-loginButton.addEventListener("click", (event) => {
+loginButton.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    if(localUsers(user.value, userPass.value)) {
+    await onlineUsers(user.value, userPass.value);
+
+    if(localUsers(user.value, userPass.value) || bool) {
         let fav = [];
         let cart = [];
+        let like = [];
+        let dislike = [];
 
         /* Compruebo si el usuario es local de nuevo, para obtener sus productos y carrito. */
         if(localUsers(user.value, userPass.value)) {
             fav = JSON.parse(localStorage.getItem(user.value)).fav;
             cart = JSON.parse(localStorage.getItem(user.value)).cart;
+            like = JSON.parse(localStorage.getItem(user.value)).like;
+            dislike = JSON.parse(localStorage.getItem(user.value)).dislike;
         }
 
         /* Creo la sesión */
         let sesion = {
             user : user.value,
             fav : fav,
-            cart : cart
+            cart : cart,
+            like : like,
+            dislike : dislike
         }
 
+        bool = false;
+
         localStorage.setItem("sesion", JSON.stringify(sesion));
+
+        window.location.href = "../index.html"; 
     } else {
         loginMessage.textContent = "Usuario o contraseña equivocados."
     }
 })
 /* -------------------------------------------------------------------------------------- */
+
+/* Volver al inicio */
+back.addEventListener("click", () => {
+    window.location.href = "../index.html"; 
+})
