@@ -203,6 +203,7 @@ buttonRegister.addEventListener("click", (event) =>  {
 
 /* Inicio de Sesión */
 /* -------------------------------------------------------------------------------------- */
+/* Función para comprobar los usuarios locales. */
 function localUsers(name, pass) {
     let user = JSON.parse(localStorage.getItem(name));
 
@@ -217,6 +218,7 @@ function localUsers(name, pass) {
     }
 }
 
+/* Función para comprobar los usuarios de la API. */
 async function onlineUsers(name, pass) {
     let usersD;
 
@@ -230,8 +232,13 @@ async function onlineUsers(name, pass) {
     })
 }
 
-/* "johnd", "m38rmF$" */
-
+/* Le asigno al boton de Inicio de Sesión, esta misma función. */
+// Es decir, hago que este botón, permita iniciar sesión.
+// Cuando es pulsado, compruebo los valores del formulario, primero con la función de comprobar los usuarios de la API, y esta dependiendo
+// si el usuario es de la API o no, cambiara el valor de un booleano, que despues servirá para ser comprobado en un if. Este if, tambien comprobará
+// si el usuario es local, y dependiendo de esta funcion, o del booleano anterior, entrará o no.
+// Si logra entra, comprobará de nuevo si es local, para obtener sus favoritos, likes, dislikes y carrito, y meterlo en la sesion.
+// Despues volveré el booleano a su valor por defecto y devolveré al inicio.
 loginButton.addEventListener("click", async (event) => {
     event.preventDefault();
 

@@ -189,6 +189,8 @@ function createDivButtons(id, priceProd) {
 }
 /* ------------------------------------------------------------------------- */
 
+/* Hago funcional el Botón de realizar compra */
+// Cuando me refiero por funcional, me refiero a que simulo una compra, pero lo que hace es borrar el carrito.
 realize_shop.addEventListener("click", () => {
     sesion.cart = [];
     

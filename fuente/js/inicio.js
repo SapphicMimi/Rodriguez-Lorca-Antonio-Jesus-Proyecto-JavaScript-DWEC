@@ -155,6 +155,7 @@ function createElementsList(products) {
 
     placement = "list";
 }
+
 /* Funcion para crear la lista */
 function createTable() {
     HTML_products.innerHTML = " ";
@@ -263,6 +264,8 @@ function createContainerElement(product) {
     HTML_products.appendChild(div_general);
 }
 
+/* Funciones para contar Likes o Dislikes */
+/* ------------------------------------------------------------------------- */
 function countLikes(id) {
     let likeCount = localStorage.getItem("like-id-" + id);
 
@@ -282,6 +285,7 @@ function countDisLikes(id) {
 
     return dislikeCount;
 }
+/* ------------------------------------------------------------------------- */
 
 /* Funciones para crear los Botones de los Productos */
 /* Botón de Me gusta */
@@ -717,6 +721,7 @@ function createCartContainer(id) {
 /* ---------------------------------------------- */
 
 /* EventListeners */
+/* ------------------------------------------------------------------------- */
 document.getElementById("b-list").addEventListener("click", () => {
     placement = "list";
     scrollActive = false;
@@ -753,3 +758,4 @@ document.getElementById("logo").addEventListener("click", () => {
 
     downloadProducts();
 })
+/* ------------------------------------------------------------------------- */
